@@ -1,5 +1,16 @@
 // simple C-style function definition
 // print(cmp(1,2));
-int cmp(int x, int y) {
-    if (x==y) { 1 } else { 0 }
+
+int main() {
+
+    int cmp(int x, int y) {
+        if (x==y) {
+            1
+        } else {
+            0
+        }
+    }
+
 }
+
+

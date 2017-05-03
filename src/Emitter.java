@@ -1,5 +1,5 @@
 import org.koko.analysis.DepthFirstAdapter;
-import org.koko.node.AArgtupFuncarg;
+import org.koko.node.AArgtupFunArg;
 import org.koko.node.ACmpPureExpr;
 import org.koko.node.ACondPureExpr;
 import org.koko.node.AFundefBindExpr;
@@ -8,7 +8,7 @@ import org.koko.node.AProgram;
 import org.koko.node.APureExpr;
 import org.koko.node.AVarPureExpr;
 import org.koko.node.PExpr;
-import org.koko.node.PFuncarg;
+import org.koko.node.PFunArg;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,9 +122,9 @@ public class Emitter extends DepthFirstAdapter {
     annotate("; Function Definition");
     emit("'(assign '" + node.getFname().toString() + " (lambda ");
 
-    for (PFuncarg arg_type : node.getFargstypes()) {
-      AArgtupFuncarg arg = (AArgtupFuncarg) arg_type;
-      emitnnl("'" + arg.getArgvar().toString() + " ");
+    for (PFunArg arg_type : node.getFargstypes()) {
+      AArgtupFunArg arg = (AArgtupFunArg) arg_type;
+      emitnnl("'" + arg.getArgVar().toString() + " ");
     }
     emitnnl("'");
   }
