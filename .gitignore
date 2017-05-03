@@ -1,2 +1,4 @@
 target/
-src/org/koko
+src/org/koko/
+src/org/newkoko/
+src/expression/
