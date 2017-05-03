@@ -3,6 +3,8 @@ Package org.newkoko;
 Helpers
 
     digit = ['0' .. '9'];
+    not_digit =  ['_' + [['a' .. 'z'] + ['A' .. 'Z']]];
+    lower_case = ['a' .. 'z'];
     tab = 9;
     cr = 13;
     lf = 10;
@@ -18,6 +20,9 @@ Tokens
     mul = '*';
     div = '/';
     semi = ';';
+    int = 'int';
+    identifier = lower_case (digit | not_digit)*;
+    equals = '=';
 
     blank = blank;
     number = digit+;
@@ -28,12 +33,16 @@ Ignored Tokens
 
 Productions
 
-    grammar           = exp_list                    {-> New grammar ([exp_list.exp])}
+    grammar           = statement_list                    {-> New grammar ([statement_list.statement])}
                       ;
 
-    exp_list          {-> exp*} =
-                        {list}    exp_list separator exp {-> [exp_list.exp, exp.exp] }
-                      | {single}  exp               {-> [exp.exp] }
+    statement_list    {-> statement*} =
+                        {list}    statement_list statement {-> [statement_list.statement, statement.statement] }
+                      | {single}  statement separator {-> [statement.statement] }
+                      ;
+
+    statement         {-> statement} =
+                        {assign}  int identifier equals exp {-> New statement.assign (identifier, exp) }
                       ;
 
     exp               {-> exp} =
@@ -60,7 +69,11 @@ Productions
 
 Abstract Syntax Tree
 
-    grammar           = exp+
+    grammar           = statement+
+                      ;
+
+    statement         =
+                        {assign}    identifier exp
                       ;
 
     exp               =
