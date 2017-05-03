@@ -1,7 +1,6 @@
 Package org.newkoko;
 
 Helpers
-
     digit = ['0' .. '9'];
     not_digit =  ['_' + [['a' .. 'z'] + ['A' .. 'Z']]];
     lower_case = ['a' .. 'z'];
@@ -28,21 +27,19 @@ Tokens
     number = digit+;
 
 Ignored Tokens
-
     blank;
 
 Productions
-
     grammar           = statement_list                    {-> New grammar ([statement_list.statement])}
                       ;
 
     statement_list    {-> statement*} =
                         {list}    statement_list statement {-> [statement_list.statement, statement.statement] }
-                      | {single}  statement separator {-> [statement.statement] }
+                      | {single}  statement {-> [statement.statement] }
                       ;
 
     statement         {-> statement} =
-                        {assign}  int identifier equals exp {-> New statement.assign (identifier, exp) }
+                        {assign}  int identifier equals exp separator {-> New statement.assign (identifier, exp) }
                       ;
 
     exp               {-> exp} =
@@ -68,7 +65,6 @@ Productions
 
 
 Abstract Syntax Tree
-
     grammar           = statement+
                       ;
 

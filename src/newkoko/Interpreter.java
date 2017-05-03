@@ -27,14 +27,9 @@ public class Interpreter extends DepthFirstAdapter {
 
   @Override
   public void outAGrammar(AGrammar node) {
-//    Iterator<PStatement> it = node.getStatement().iterator();
-//    while (it.hasNext()) {
-//      PStatement statement = it.next();
-//      System.out.print(getNodeInt(statement));
-//      if (it.hasNext()) System.out.print("; ");
-//    }
-    vars.forEach((key, value) -> System.out.println(key + " = " + value));
     System.out.println();
+    System.out.println("Final values:");
+    vars.forEach((key, value) -> System.out.println(key + " = " + value));
   }
 
   @Override
@@ -42,6 +37,7 @@ public class Interpreter extends DepthFirstAdapter {
     int value = getNodeInt(node.getExp());
     String identifier = node.getIdentifier().getText();
     vars.put(identifier, value);
+    System.out.println(identifier + " = " + value);
   }
 
 
@@ -67,7 +63,11 @@ public class Interpreter extends DepthFirstAdapter {
 
   @Override
   public void outADivExp(ADivExp node) {
-    // maybe we should check here for division by zero? :)
-    setNodeInt(node, getNodeInt(node.getL()) / getNodeInt(node.getR()));
+    int left = getNodeInt(node.getL());
+    int right = getNodeInt(node.getR());
+    if (right == 0) {
+      throw new ArithmeticException("You can't divide by zero! (" + left + "/" + right + ")");
+    }
+    setNodeInt(node, left / right);
   }
 }

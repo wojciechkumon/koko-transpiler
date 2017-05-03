@@ -17,11 +17,9 @@ public class NewKokoMain {
       Start start = p.parse();
 //      System.out.println(start.toString());
 
-      Interpreter interpreter = new Interpreter();
-      start.apply(interpreter);
+      start.apply(new Interpreter());
 
-      AstDisplayer displayer = new AstDisplayer();
-      start.apply(displayer);
+//      start.apply(new AstDisplayer());
 
     } catch (Exception e) {
       e.printStackTrace();
