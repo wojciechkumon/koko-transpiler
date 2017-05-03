@@ -4,7 +4,7 @@ import org.newkoko.analysis.DepthFirstAdapter;
 import org.newkoko.node.ADivExp;
 import org.newkoko.node.AGrammar;
 import org.newkoko.node.AMinusExp;
-import org.newkoko.node.AMultExp;
+import org.newkoko.node.AMulExp;
 import org.newkoko.node.ANumberExp;
 import org.newkoko.node.APlusExp;
 import org.newkoko.node.Node;
@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class Interpreter extends DepthFirstAdapter {
   private Map<Node, Integer> node2int = new HashMap<>();
+  private Map<Node, Integer> vars = new HashMap<>();
 
   private int getNodeInt(Node node) {
     return node2int.get(node);
@@ -47,7 +48,7 @@ public class Interpreter extends DepthFirstAdapter {
     setNodeInt(node, getNodeInt(node.getL()) - getNodeInt(node.getR()));
   }
 
-  public void outAMultExp(AMultExp node) {
+  public void outAMultExp(AMulExp node) {
     setNodeInt(node, getNodeInt(node.getL()) * getNodeInt(node.getR()));
   }
 

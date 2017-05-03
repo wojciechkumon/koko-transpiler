@@ -15,7 +15,7 @@ Tokens
     r_par = ')';
     plus = '+';
     minus = '-';
-    mult = '*';
+    mul = '*';
     div = '/';
     semi = ';';
 
@@ -43,7 +43,7 @@ Productions
                       ;
 
     factor            {-> exp} =
-                        {mult}    factor mult term  {-> New exp.mult (factor.exp, term.exp) }
+                        {mul}    factor mul term  {-> New exp.mul (factor.exp, term.exp) }
                       | {div}     factor div term   {-> New exp.div (factor.exp, term.exp) }
                       | {term}    term              {-> term.exp }
                       ;
@@ -67,6 +67,6 @@ Abstract Syntax Tree
                         {plus}    [l]:exp  [r]:exp |
                         {minus}   [l]:exp  [r]:exp |
                         {div}     [l]:exp  [r]:exp |
-                        {mult}    [l]:exp  [r]:exp |
+                        {mul}    [l]:exp  [r]:exp |
                         {number}  number
                       ;
