@@ -8,6 +8,8 @@ Helpers
     cr = 13;
     lf = 10;
     eol = cr lf | cr | lf;
+    int = 'int';
+    double = 'double';
 
     blank = (' ' | tab | eol)+;
 
@@ -19,7 +21,7 @@ Tokens
     mul = '*';
     div = '/';
     semi = ';';
-    int = 'int';
+    primitive_type = int | double;
     identifier = lower_case (digit | not_digit)*;
     equals = '=';
 
@@ -39,7 +41,7 @@ Productions
                       ;
 
     statement         {-> statement} =
-                        {assign}  int identifier equals exp separator {-> New statement.assign (identifier, exp) }
+                        {assign}  primitive_type identifier equals exp separator {-> New statement.assign (primitive_type, identifier, exp) }
                       ;
 
     exp               {-> exp} =
@@ -69,7 +71,7 @@ Abstract Syntax Tree
                       ;
 
     statement         =
-                        {assign}    identifier exp
+                        {assign}    primitive_type identifier exp
                       ;
 
     exp               =
