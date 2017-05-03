@@ -8,9 +8,6 @@ Helpers
     cr = 13;
     lf = 10;
     eol = cr lf | cr | lf;
-    int = 'int';
-    double = 'double';
-
     blank = (' ' | tab | eol)+;
 
 Tokens
@@ -21,12 +18,14 @@ Tokens
     mul = '*';
     div = '/';
     semi = ';';
-    primitive_type = int | double;
+    int = 'int';
+    double = 'double';
     identifier = lower_case (digit | not_digit)*;
     equals = '=';
 
     blank = blank;
-    number = digit+;
+    number = digit+ ('.' + digit+)?;
+//    double_number = digit+ '.' + digit+;
 
 Ignored Tokens
     blank;
@@ -41,8 +40,10 @@ Productions
                       ;
 
     statement         {-> statement} =
-                        {assign}  primitive_type identifier equals exp separator {-> New statement.assign (primitive_type, identifier, exp) }
-                      ;
+                        {assign_new_int} int identifier equals exp separator {-> New statement.assign_new_int (identifier, exp) } |
+                        {assign_new_double} double identifier equals exp separator {-> New statement.assign_new_double (identifier, exp) } |
+                        {assign} identifier equals exp separator {-> New statement.assign (identifier, exp) }
+                       ;
 
     exp               {-> exp} =
                         {plus}    exp plus factor   {-> New exp.plus (exp.exp, factor.exp) }
@@ -71,7 +72,9 @@ Abstract Syntax Tree
                       ;
 
     statement         =
-                        {assign}    primitive_type identifier exp
+                        {assign_new_int}    identifier exp |
+                        {assign_new_double} identifier exp |
+                        {assign} identifier exp
                       ;
 
     exp               =
