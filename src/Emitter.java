@@ -1,10 +1,3 @@
-/*
- * A simple example for emitting Gannet code from a C-style function definition
- *
- * (c) Wim Vanderbauwhede 2010
- *
- * */
-
 import org.koko.analysis.DepthFirstAdapter;
 import org.koko.node.AArgtupFuncarg;
 import org.koko.node.ACmpPureExpr;
