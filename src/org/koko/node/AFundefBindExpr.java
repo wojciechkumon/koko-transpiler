@@ -10,7 +10,7 @@ public final class AFundefBindExpr extends PBindExpr
 {
     private TInt _ftype_;
     private TIdentifier _fname_;
-    private final LinkedList<PFuncarg> _fargstypes_ = new LinkedList<PFuncarg>();
+    private final LinkedList<PFunArg> _fargstypes_ = new LinkedList<PFunArg>();
     private final LinkedList<PExpr> _fbody_ = new LinkedList<PExpr>();
 
     public AFundefBindExpr()
@@ -101,14 +101,14 @@ public final class AFundefBindExpr extends PBindExpr
         this._fname_ = node;
     }
 
-    public LinkedList<PFuncarg> getFargstypes()
+    public LinkedList<PFunArg> getFargstypes()
     {
         return this._fargstypes_;
     }
 
     public void setFargstypes(List<?> list)
     {
-        for(PFuncarg e : this._fargstypes_)
+        for(PFunArg e : this._fargstypes_)
         {
             e.parent(null);
         }
@@ -116,7 +116,7 @@ public final class AFundefBindExpr extends PBindExpr
 
         for(Object obj_e : list)
         {
-            PFuncarg e = (PFuncarg) obj_e;
+            PFunArg e = (PFunArg) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
@@ -208,13 +208,13 @@ public final class AFundefBindExpr extends PBindExpr
             return;
         }
 
-        for(ListIterator<PFuncarg> i = this._fargstypes_.listIterator(); i.hasNext();)
+        for(ListIterator<PFunArg> i = this._fargstypes_.listIterator(); i.hasNext();)
         {
             if(i.next() == oldChild)
             {
                 if(newChild != null)
                 {
-                    i.set((PFuncarg) newChild);
+                    i.set((PFunArg) newChild);
                     newChild.parent(this);
                     oldChild.parent(null);
                     return;

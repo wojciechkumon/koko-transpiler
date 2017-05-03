@@ -20,12 +20,12 @@ public interface Analysis extends Switch
     void caseACondPureExpr(ACondPureExpr node);
     void caseANumberPureExpr(ANumberPureExpr node);
     void caseAVarPureExpr(AVarPureExpr node);
-    void caseAArgtupFuncarg(AArgtupFuncarg node);
+    void caseAArgtupFunArg(AArgtupFunArg node);
 
     void caseTComma(TComma node);
     void caseTLPar(TLPar node);
     void caseTRPar(TRPar node);
-    void caseTSemi(TSemi node);
+    void caseTSemicolon(TSemicolon node);
     void caseTCmp(TCmp node);
     void caseTLBrace(TLBrace node);
     void caseTRBrace(TRBrace node);

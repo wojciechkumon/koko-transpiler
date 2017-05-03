@@ -126,9 +126,9 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
             }
         }
         {
-            List<PFuncarg> copy = new ArrayList<PFuncarg>(node.getFargstypes());
+            List<PFunArg> copy = new ArrayList<PFunArg>(node.getFargstypes());
             Collections.reverse(copy);
-            for(PFuncarg e : copy)
+            for(PFunArg e : copy)
             {
                 e.apply(this);
             }
@@ -252,28 +252,28 @@ public class ReversedDepthFirstAdapter extends AnalysisAdapter
         outAVarPureExpr(node);
     }
 
-    public void inAArgtupFuncarg(AArgtupFuncarg node)
+    public void inAArgtupFunArg(AArgtupFunArg node)
     {
         defaultIn(node);
     }
 
-    public void outAArgtupFuncarg(AArgtupFuncarg node)
+    public void outAArgtupFunArg(AArgtupFunArg node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAArgtupFuncarg(AArgtupFuncarg node)
+    public void caseAArgtupFunArg(AArgtupFunArg node)
     {
-        inAArgtupFuncarg(node);
-        if(node.getArgvar() != null)
+        inAArgtupFunArg(node);
+        if(node.getArgVar() != null)
         {
-            node.getArgvar().apply(this);
+            node.getArgVar().apply(this);
         }
-        if(node.getArgtype() != null)
+        if(node.getArgType() != null)
         {
-            node.getArgtype().apply(this);
+            node.getArgType().apply(this);
         }
-        outAArgtupFuncarg(node);
+        outAArgtupFunArg(node);
     }
 }

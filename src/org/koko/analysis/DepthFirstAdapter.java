@@ -125,8 +125,8 @@ public class DepthFirstAdapter extends AnalysisAdapter
             node.getFname().apply(this);
         }
         {
-            List<PFuncarg> copy = new ArrayList<PFuncarg>(node.getFargstypes());
-            for(PFuncarg e : copy)
+            List<PFunArg> copy = new ArrayList<PFunArg>(node.getFargstypes());
+            for(PFunArg e : copy)
             {
                 e.apply(this);
             }
@@ -246,28 +246,28 @@ public class DepthFirstAdapter extends AnalysisAdapter
         outAVarPureExpr(node);
     }
 
-    public void inAArgtupFuncarg(AArgtupFuncarg node)
+    public void inAArgtupFunArg(AArgtupFunArg node)
     {
         defaultIn(node);
     }
 
-    public void outAArgtupFuncarg(AArgtupFuncarg node)
+    public void outAArgtupFunArg(AArgtupFunArg node)
     {
         defaultOut(node);
     }
 
     @Override
-    public void caseAArgtupFuncarg(AArgtupFuncarg node)
+    public void caseAArgtupFunArg(AArgtupFunArg node)
     {
-        inAArgtupFuncarg(node);
-        if(node.getArgtype() != null)
+        inAArgtupFunArg(node);
+        if(node.getArgType() != null)
         {
-            node.getArgtype().apply(this);
+            node.getArgType().apply(this);
         }
-        if(node.getArgvar() != null)
+        if(node.getArgVar() != null)
         {
-            node.getArgvar().apply(this);
+            node.getArgVar().apply(this);
         }
-        outAArgtupFuncarg(node);
+        outAArgtupFunArg(node);
     }
 }
