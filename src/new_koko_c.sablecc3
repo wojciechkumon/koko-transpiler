@@ -1,0 +1,84 @@
+Package org.newkoko.c;
+
+
+Helpers
+    all	= [0 .. 127] ;
+    digit = ['0' .. '9'] ;
+    not_digit = ['_' + [['a' .. 'z'] + ['A' .. 'Z']]] ;
+    digit_sequence = digit+ ;
+    fractional_constant	= digit_sequence ? '.' digit_sequence | digit_sequence '.' ;
+    sign = '+' | '-' ;
+    exponent_part = ( 'e' | 'E' ) sign ? digit_sequence ;
+    escape_sequence = '\' ''' | '\"' | '\?' | '\\' | '\a' | '\b' | '\f' | '\n' | '\r' | '\t' | '\v' ;
+    string_char	= [ all - [ '"' + [ '\' + [ 10 + 13 ] ] ] ] | escape_sequence ;
+    string_char_sequence = string_char+ ;
+    nonzero_digit = ['1' .. '9'] ;
+    cr = 13 ;
+    lf = 10 ;
+    not_star = [all - '*'] ;
+    not_star_slash = [not_star - '/'] ;
+    tab = 9;
+
+
+Tokens
+
+    dot = '.' ;
+    comma = ',' ;
+    colon = ':' ;
+    semicolon = ';' ;
+    l_par = '(' ;
+    r_par = ')' ;
+    l_bracket = '[' ;
+    r_bracket = ']' ;
+    l_brace = '{' ;
+    r_brace = '}' ;
+    star = '*' ;
+    div = '/' ;
+    mod = '%' ;
+    ampersand = '&' ;
+    plus = '+' ;
+    minus = '-' ;
+    excl_mark = '!' ;
+    quest_mark = '?' ;
+    eq = '=' ;
+    eq_eq = '==' ;
+    not_eq = '!=' ;
+    lt = '<' ;
+    lt_eq = '<=' ;
+    gt = '>' ;
+    gt_eq = '>=' ;
+    ampersand_ampersand = '&&' ;
+    bar_bar = '||' ;
+    star_equal = '*=' ;
+    div_equal = '/=' ;
+    mod_equal = '%=' ;
+    plus_equal = '+=' ;
+    minus_equal = '-=' ;
+    ampersand_equal = '&=' ;
+    caret_equal = '^=' ;
+    bar_equal = '|=' ;
+    case = 'case' ;
+    if = 'if' ;
+    else = 'else' ;
+    switch = 'switch' ;
+    while = 'while' ;
+    for = 'for' ;
+    continue = 'continue' ;
+    break = 'break' ;
+    return = 'return' ;
+    void = 'void' ;
+    int = 'int' ;
+    long = 'long' ;
+    double = 'double' ;
+    identifier = not_digit (digit | not_digit)* ;
+    floating_constant = fractional_constant exponent_part ? | digit_sequence exponent_part ;
+    string_literal = 'L' ? '"' string_char_sequence ? '"' ;
+    integer_constant = nonzero_digit digit* ;
+    blank = (cr | lf | tab | ' ')+ ;
+    comment = '/*' not_star* '*' + (not_star_slash not_star * '*'+)* '/' ;
+
+
+Ignored Tokens
+    blank,
+    comment;
+
