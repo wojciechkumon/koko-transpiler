@@ -38,7 +38,11 @@
                     <arguments>
                         <argument>-jar</argument>
                         <argument>lib/sablecc.jar</argument>
-                        <argument>src/main/resources/new_koko_c.sablecc3</argument>
+                        <argument>src/main/resources/sablecc/new_koko_c.sablecc3</argument>
+                        <argument>src/main/resources/sablecc/c_style_funcdef.sablecc3</argument>
+                        <argument>src/main/resources/sablecc/calc.sablecc3</argument>
+                        <argument>src/main/resources/sablecc/koko.sablecc3</argument>
+                        <argument>src/main/resources/sablecc/newkoko.sablecc3</argument>
                     </arguments>
                 </configuration>
             </plugin>
@@ -54,11 +58,27 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/extra-resources</outputDirectory>
+                            <outputDirectory>${basedir}/target/generated-sources/org
+                            </outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/non-packaged-resources</directory>
-                                    <filtering>true</filtering>
+                                    <directory>src/main/resources/sablecc/org</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-sablecc-sources2</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/generated-sources/expression
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources/sablecc/expression</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -74,13 +94,32 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <target>
-                                <delete dir="${project.build.directory}/src/main/resources/org"
+                                <delete dir="${basedir}/src/main/resources/sablecc/org"
+                                        includeemptydirs="true"/>
+                                <delete dir="${basedir}/src/main/resources/sablecc/expression"
                                         includeemptydirs="true"/>
                             </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources</source>
+                            </sources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

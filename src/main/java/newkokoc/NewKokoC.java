@@ -15,7 +15,7 @@ public class NewKokoC {
 
   public static void main(String[] argv) {
     try {
-      InputStream inputStream = NewKokoMain.class.getClassLoader().getResourceAsStream("new_koko_c.koko");
+      InputStream inputStream = NewKokoMain.class.getClassLoader().getResourceAsStream("test-input/new_koko_c.koko");
 //      InputStream inputStream = System.in;
 
 

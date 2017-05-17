@@ -13,7 +13,7 @@ public class NewKokoMain {
 
   public static void main(String[] argv) {
     try {
-      InputStream inputStream = NewKokoMain.class.getClassLoader().getResourceAsStream("test.koko");
+      InputStream inputStream = NewKokoMain.class.getClassLoader().getResourceAsStream("test-input/test.koko");
 //      InputStream inputStream = System.in;
 
 
