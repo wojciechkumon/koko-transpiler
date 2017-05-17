@@ -58,9 +58,6 @@ Tokens
     mod_equal = '%=' ;
     plus_equal = '+=' ;
     minus_equal = '-=' ;
-    ampersand_equal = '&=' ;
-    caret_equal = '^=' ;
-    bar_equal = '|=' ;
     case = 'case' ;
     if = 'if' ;
     else = 'else' ;
@@ -112,14 +109,51 @@ Productions
 
     function_body = l_brace statement* stop_statement? r_brace ;
 
-    statement = simple_statement semicolon ; // TODO
+    statement = {simple_statement} simple_statement semicolon
+                | {if} if l_par conditional_expression r_par statement_block
+                | {if_else} if l_par conditional_expression r_par [if_block]:statement_block
+                            else [else_block]:statement_block
+                | {while} while l_par conditional_expression r_par statement_block ; // TODO
 
-    simple_statement = {new_variable} new_variable
-                       | {call_expression} call_expression ;
+    conditional_expression = {relation} [left]:value relation_op [right]:value
+                             | {value} value; // TODO multi conditional expression
 
-    new_variable = type identifier eq value ; // TODO
+    relation_op = {eq_eq} eq_eq
+                | {not_eq} not_eq
+                | {lt} lt
+                | {lt_eq} lt_eq
+                | {gt} gt
+                | {gt_eq} gt_eq ;
+
+    simple_statement = {new_variable} type identifier eq right_hand_side
+                        | {assign_variable} identifier eq right_hand_side
+                        | {call_expression} call_expression ;
+
+    right_hand_side = {unary} unary_expression
+                        | {binary} binary_expression ;
+
+    binary_expression = {binary_expression} [l_value]:value binary_op [r_value]:value ;
+
+    binary_op = {relation_op} relation_op
+                | {star} star
+                | {div} div
+                | {mod} mod
+                | {plus} plus
+                | {minus} minus
+                | {ampersand_ampersand} ampersand_ampersand
+                | {bar_bar}	bar_bar ;
+
+    unary_expression =  {value} value
+                       | {call} call_expression
+                       | {unary_op}	unary_op identifier
+                       | {par_unary_op} l_par unary_op identifier r_par ;
+
+    unary_op = {minus} minus
+                | {excl_mark} excl_mark ;
 
     call_expression	= identifier l_par arg_list ? r_par ;
+
+    statement_block = l_brace statement* stop_statement ? r_brace ;
 
     arg_list = value arg_list_tail * ;
 
@@ -133,5 +167,5 @@ Productions
             | {constant} constant ;
 
     constant = {string} string_literal
-                | {integer} integer_constant
-                | {double} floating_constant ;
+                | {integer} minus? integer_constant
+                | {double} minus? floating_constant ;

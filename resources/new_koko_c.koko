@@ -1,11 +1,36 @@
 void x(double x) {
-    double test = 0;
+    double test = -5;
+
     // short comment fgv43ptm43op m43p 3m p34
     /* long comment
-    tr r
-    tb
+    xx
+    xx
     r */
 }
 
+print("afa");
+
 double blabla = 12412;
 x(1241);
+
+if (7 > 5) {
+    return 2;
+}
+
+if (13512 == 7546) {
+    int a =5;
+} else {
+    int b = 1;
+    print(b);
+}
+
+
+int i = 0;
+while (i == 2) {
+    print(i);
+    i = i + 1;
+}
+
+int x = sth(12421);
+
+double r = 125 / 241.421;
