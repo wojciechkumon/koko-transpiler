@@ -1,4 +1,6 @@
 target/
-src/org/koko/
-src/org/newkoko/
-src/expression/
+src/main/java/org/koko/
+src/main/java/org/newkoko/
+src/main/java/expression/
+.idea/
+*.iml
