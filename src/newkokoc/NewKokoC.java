@@ -1,6 +1,8 @@
 package newkokoc;
 
 import org.newkoko.c.lexer.Lexer;
+import org.newkoko.c.node.Start;
+import org.newkoko.c.parser.Parser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -18,9 +20,9 @@ public class NewKokoC {
 
 
       Lexer l = new Lexer(new PushbackReader(new BufferedReader(new InputStreamReader(inputStream))));
-//      Parser p = new Parser(l);
-//      Start start = p.parse();
-//      System.out.println(start.toString());
+      Parser p = new Parser(l);
+      Start start = p.parse();
+      System.out.println(start.toString());
 
 //      start.apply(new Interpreter());
 //      start.apply(new KokoCompiler());

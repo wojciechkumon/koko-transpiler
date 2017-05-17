@@ -12,12 +12,16 @@ Helpers
     escape_sequence = '\' ''' | '\"' | '\?' | '\\' | '\a' | '\b' | '\f' | '\n' | '\r' | '\t' | '\v' ;
     string_char	= [ all - [ '"' + [ '\' + [ 10 + 13 ] ] ] ] | escape_sequence ;
     string_char_sequence = string_char+ ;
-    nonzero_digit = ['1' .. '9'] ;
+    not_zero_digit = ['1' .. '9'] ;
     cr = 13 ;
     lf = 10 ;
+    eol = cr lf | cr | lf ;
+    not_cr_lf = [all - [cr + lf]] ;
     not_star = [all - '*'] ;
     not_star_slash = [not_star - '/'] ;
     tab = 9;
+    short_comment = '//' not_cr_lf* eol ;
+    long_comment = '/*' not_star* '*'+ (not_star_slash not_star* '*'+)* '/' ;
 
 
 Tokens
@@ -73,12 +77,61 @@ Tokens
     identifier = not_digit (digit | not_digit)* ;
     floating_constant = fractional_constant exponent_part ? | digit_sequence exponent_part ;
     string_literal = 'L' ? '"' string_char_sequence ? '"' ;
-    integer_constant = nonzero_digit digit* ;
-    blank = (cr | lf | tab | ' ')+ ;
-    comment = '/*' not_star* '*' + (not_star_slash not_star * '*'+)* '/' ;
+    integer_constant = not_zero_digit digit* | '0';
+    blank = (eol | tab | ' ')+ ;
+    comment = short_comment | long_comment ;
 
 
 Ignored Tokens
     blank,
     comment;
 
+
+Productions
+    program = function_or_statement* ;
+
+    function_or_statement = {function} function
+                            | {statement} statement ;
+
+    function = function_type function_declaration function_body ;
+
+    function_type = {void} void
+                    | type ;
+
+    type = {int} int
+            | {long} long
+            | {double} double ;
+
+    function_declaration = identifier l_par parameter_list? r_par ;
+
+    parameter_list = parameter next_parameter* ;
+
+    parameter = type identifier ;
+
+    next_parameter = comma parameter ;
+
+    function_body = l_brace statement* stop_statement? r_brace ;
+
+    statement = simple_statement semicolon ; // TODO
+
+    simple_statement = {new_variable} new_variable
+                       | {call_expression} call_expression ;
+
+    new_variable = type identifier eq value ; // TODO
+
+    call_expression	= identifier l_par arg_list ? r_par ;
+
+    arg_list = value arg_list_tail * ;
+
+    arg_list_tail = comma value ;
+
+    stop_statement = {return} return semicolon
+                        | {return_value} return value semicolon
+                        | {return_par} return l_par value r_par semicolon ;
+
+    value = {identifier} identifier
+            | {constant} constant ;
+
+    constant = {string} string_literal
+                | {integer} integer_constant
+                | {double} floating_constant ;

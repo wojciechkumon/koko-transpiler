@@ -1,0 +1,11 @@
+void x(double x) {
+    double test = 0;
+    // short comment fgv43ptm43op m43p 3m p34
+    /* long comment
+    tr r
+    tb
+    r */
+}
+
+double blabla = 12412;
+x(1241);
