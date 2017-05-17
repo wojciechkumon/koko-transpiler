@@ -24,8 +24,7 @@ public class NewKokoC {
       Start start = p.parse();
       System.out.println(start.toString());
 
-//      start.apply(new Interpreter());
-//      start.apply(new KokoCompiler());
+      start.apply(new KokoCodeGenerator());
 
 //      start.apply(new AstDisplayer());
 
