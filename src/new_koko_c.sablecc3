@@ -67,6 +67,7 @@ Tokens
     continue = 'continue' ;
     break = 'break' ;
     return = 'return' ;
+    fun = 'fun' ;
     void = 'void' ;
     int = 'int' ;
     long = 'long' ;
@@ -90,7 +91,9 @@ Productions
     function_or_statement = {function} function
                             | {statement} statement ;
 
-    function = function_type function_declaration function_body ;
+    function = function_declaration function_body ;
+
+    function_declaration = fun identifier l_par parameter_list? r_par function_type ;
 
     function_type = {void} void
                     | type ;
@@ -98,8 +101,6 @@ Productions
     type = {int} int
             | {long} long
             | {double} double ;
-
-    function_declaration = identifier l_par parameter_list? r_par ;
 
     parameter_list = parameter next_parameter* ;
 

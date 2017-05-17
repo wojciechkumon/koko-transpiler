@@ -1,4 +1,4 @@
-void x(double x) {
+fun x(double x) void {
     double test = -5;
 
     // short comment fgv43ptm43op m43p 3m p34
