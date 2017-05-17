@@ -72,8 +72,8 @@ Tokens
     long = 'long' ;
     double = 'double' ;
     identifier = not_digit (digit | not_digit)* ;
-    floating_constant = fractional_constant exponent_part ? | digit_sequence exponent_part ;
-    string_literal = 'L' ? '"' string_char_sequence ? '"' ;
+    floating_constant = fractional_constant exponent_part? | digit_sequence exponent_part ;
+    string_literal = '"' string_char_sequence? '"' ;
     integer_constant = not_zero_digit digit* | '0';
     blank = (eol | tab | ' ')+ ;
     comment = short_comment | long_comment ;
@@ -166,11 +166,11 @@ Productions
     unary_op = {minus} minus
                 | {excl_mark} excl_mark ;
 
-    call_expression	= identifier l_par arg_list ? r_par ;
+    call_expression	= identifier l_par arg_list? r_par ;
 
-    statement_block = l_brace statement* stop_statement ? r_brace ;
+    statement_block = l_brace statement* stop_statement? r_brace ;
 
-    arg_list = value arg_list_tail * ;
+    arg_list = value arg_list_tail* ;
 
     arg_list_tail = comma value ;
 
