@@ -113,7 +113,11 @@ Productions
                 | {if} if l_par conditional_expression r_par statement_block
                 | {if_else} if l_par conditional_expression r_par [if_block]:statement_block
                             else [else_block]:statement_block
-                | {while} while l_par conditional_expression r_par statement_block ; // TODO
+                | {while} while l_par conditional_expression r_par statement_block
+                | {for} for l_par [init]:new_variable? [first_semicolon]:semicolon
+                        conditional_expression? [second_semicolon]:semicolon
+                        [iterator]:assign_variable? r_par
+                        statement_block ; // TODO switch?
 
     conditional_expression = {relation} [left]:value relation_op [right]:value
                              | {value} value; // TODO multi conditional expression
@@ -125,9 +129,20 @@ Productions
                 | {gt} gt
                 | {gt_eq} gt_eq ;
 
-    simple_statement = {new_variable} type identifier eq right_hand_side
-                        | {assign_variable} identifier eq right_hand_side
+    simple_statement = {new_variable} new_variable
+                        | {assign_variable} assign_variable
                         | {call_expression} call_expression ;
+
+    new_variable = type identifier eq right_hand_side ;
+
+    assign_variable = identifier assign_op right_hand_side ;
+
+    assign_op = {eq} eq
+                | {plus_eq} plus_equal
+                | {minus_eq} minus_equal
+                | {star_eq} star_equal
+                | {div_eq} div_equal
+                | {mod_eq} mod_equal ;
 
     right_hand_side = {unary} unary_expression
                         | {binary} binary_expression ;
