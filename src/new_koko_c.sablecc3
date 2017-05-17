@@ -64,6 +64,7 @@ Tokens
     switch = 'switch' ;
     while = 'while' ;
     for = 'for' ;
+    in = 'in' ;
     continue = 'continue' ;
     break = 'break' ;
     return = 'return' ;
@@ -111,14 +112,11 @@ Productions
     function_body = l_brace statement* stop_statement? r_brace ;
 
     statement = {simple_statement} simple_statement semicolon
-                | {if} if l_par conditional_expression r_par statement_block
-                | {if_else} if l_par conditional_expression r_par [if_block]:statement_block
+                | {if} if conditional_expression statement_block
+                | {if_else} if conditional_expression [if_block]:statement_block
                             else [else_block]:statement_block
-                | {while} while l_par conditional_expression r_par statement_block
-                | {for} for l_par [init]:new_variable? [first_semicolon]:semicolon
-                        conditional_expression? [second_semicolon]:semicolon
-                        [iterator]:assign_variable? r_par
-                        statement_block ; // TODO switch?
+                | {while} while conditional_expression statement_block
+                | {for} for identifier in [from]:value colon [to]:value statement_block ; // TODO switch?
 
     conditional_expression = {relation} [left]:value relation_op [right]:value
                              | {value} value; // TODO multi conditional expression

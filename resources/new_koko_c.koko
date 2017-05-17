@@ -13,11 +13,11 @@ print("afa");
 double blabla = 12412;
 x(1241);
 
-if (7 > 5) {
+if 7 > 5 {
     return 2;
 }
 
-if (13512 == 7546) {
+if 13512 == 7546 {
     int a =5;
 } else {
     int b = 1;
@@ -26,7 +26,7 @@ if (13512 == 7546) {
 
 
 int i = 0;
-while (i == 2) {
+while i == 2 {
     print(i);
     i = i + 1;
 }
@@ -36,6 +36,6 @@ int x = sth(12421);
 double r = 125 / 241.421;
 
 
-for (int i = 0; i < 10; i += 2) {
+for i in 0:10 {
     print(i);
 }
