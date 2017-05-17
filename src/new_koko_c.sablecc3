@@ -26,7 +26,6 @@ Helpers
 
 Tokens
 
-    dot = '.' ;
     comma = ',' ;
     colon = ':' ;
     semicolon = ';' ;
@@ -110,13 +109,13 @@ Productions
     next_parameter = comma parameter ;
 
     function_body = l_brace statement* stop_statement? r_brace ;
-
+// TODO arrays
     statement = {simple_statement} simple_statement semicolon
                 | {if} if conditional_expression statement_block
-                | {if_else} if conditional_expression [if_block]:statement_block
+                | {if_else} if conditional_expression [if_block]:statement_block // TODO else if
                             else [else_block]:statement_block
-                | {while} while conditional_expression statement_block
-                | {for} for identifier in [from]:value colon [to]:value statement_block ; // TODO switch?
+                | {while} while conditional_expression statement_block // TODO continue, break in loops
+                | {for} for identifier in [from]:value colon [to]:value statement_block ; // TODO switch, ternary operator
 
     conditional_expression = {relation} [left]:value relation_op [right]:value
                              | {value} value; // TODO multi conditional expression
