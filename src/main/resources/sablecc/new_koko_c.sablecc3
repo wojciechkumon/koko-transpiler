@@ -158,8 +158,7 @@ Productions
 
     unary_expression =  {value} value
                        | {call} call_expression
-                       | {unary_op}	unary_op identifier
-                       | {par_unary_op} l_par unary_op identifier r_par ;
+                       | {unary_op}	unary_op identifier;
 
     unary_op = {minus} minus
                 | {excl_mark} excl_mark ;

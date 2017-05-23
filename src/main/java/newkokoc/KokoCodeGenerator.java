@@ -1,11 +1,18 @@
 package newkokoc;
 
 import org.newkoko.c.analysis.DepthFirstAdapter;
+import org.newkoko.c.node.AAmpersandAmpersandBinaryOp;
 import org.newkoko.c.node.AAssignVariable;
+import org.newkoko.c.node.ABarBarBinaryOp;
+import org.newkoko.c.node.ABinaryExpressionBinaryExpression;
 import org.newkoko.c.node.ACallExpression;
+import org.newkoko.c.node.ADivBinaryOp;
+import org.newkoko.c.node.ADivEqAssignOp;
+import org.newkoko.c.node.ADoubleConstant;
 import org.newkoko.c.node.ADoubleType;
 import org.newkoko.c.node.AEqAssignOp;
 import org.newkoko.c.node.AEqEqRelationOp;
+import org.newkoko.c.node.AExclMarkUnaryOp;
 import org.newkoko.c.node.AForStatement;
 import org.newkoko.c.node.AFunctionBody;
 import org.newkoko.c.node.AFunctionDeclaration;
@@ -19,16 +26,26 @@ import org.newkoko.c.node.AIntegerConstant;
 import org.newkoko.c.node.ALongType;
 import org.newkoko.c.node.ALtEqRelationOp;
 import org.newkoko.c.node.ALtRelationOp;
+import org.newkoko.c.node.AMinusBinaryOp;
+import org.newkoko.c.node.AMinusEqAssignOp;
+import org.newkoko.c.node.AMinusUnaryOp;
+import org.newkoko.c.node.AModBinaryOp;
+import org.newkoko.c.node.AModEqAssignOp;
 import org.newkoko.c.node.ANewVariable;
 import org.newkoko.c.node.ANextParameter;
 import org.newkoko.c.node.ANotEqRelationOp;
 import org.newkoko.c.node.AParameter;
+import org.newkoko.c.node.APlusBinaryOp;
+import org.newkoko.c.node.APlusEqAssignOp;
 import org.newkoko.c.node.ARelationConditionalExpression;
 import org.newkoko.c.node.AReturnStopStatement;
 import org.newkoko.c.node.AReturnValueStopStatement;
 import org.newkoko.c.node.ASimpleStatementStatement;
+import org.newkoko.c.node.AStarBinaryOp;
+import org.newkoko.c.node.AStarEqAssignOp;
 import org.newkoko.c.node.AStatementBlock;
 import org.newkoko.c.node.AStringConstant;
+import org.newkoko.c.node.AUnaryOpUnaryExpression;
 import org.newkoko.c.node.AVoidFunctionType;
 import org.newkoko.c.node.AWhileStatement;
 import org.newkoko.c.node.Start;
@@ -84,6 +101,11 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
   @Override
   public void outAIntegerConstant(AIntegerConstant node) {
     print(node.getIntegerConstant().getText());
+  }
+
+  @Override
+  public void outADoubleConstant(ADoubleConstant node) {
+    print(node.getFloatingConstant().getText());
   }
 
   @Override
@@ -235,6 +257,66 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
   }
 
   @Override
+  public void outAPlusEqAssignOp(APlusEqAssignOp node) {
+    print(node.getPlusEqual().getText());
+  }
+
+  @Override
+  public void outAMinusEqAssignOp(AMinusEqAssignOp node) {
+    print(node.getMinusEqual().getText());
+  }
+
+  @Override
+  public void outAStarEqAssignOp(AStarEqAssignOp node) {
+    print(node.getStarEqual().getText());
+  }
+
+  @Override
+  public void outADivEqAssignOp(ADivEqAssignOp node) {
+    print(node.getDivEqual().getText());
+  }
+
+  @Override
+  public void outAModEqAssignOp(AModEqAssignOp node) {
+    print(node.getModEqual().getText());
+  }
+
+  @Override
+  public void outAStarBinaryOp(AStarBinaryOp node) {
+    print(node.getStar().getText());
+  }
+
+  @Override
+  public void outADivBinaryOp(ADivBinaryOp node) {
+    print(node.getDiv().getText());
+  }
+
+  @Override
+  public void outAModBinaryOp(AModBinaryOp node) {
+    print(node.getMod().getText());
+  }
+
+  @Override
+  public void outAPlusBinaryOp(APlusBinaryOp node) {
+    print(node.getPlus().getText());
+  }
+
+  @Override
+  public void outAMinusBinaryOp(AMinusBinaryOp node) {
+    print(node.getMinus().getText());
+  }
+
+  @Override
+  public void outAAmpersandAmpersandBinaryOp(AAmpersandAmpersandBinaryOp node) {
+    print(node.getAmpersandAmpersand().getText());
+  }
+
+  @Override
+  public void outABarBarBinaryOp(ABarBarBinaryOp node) {
+    print(node.getBarBar().getText());
+  }
+
+  @Override
   public void caseACallExpression(ACallExpression node) {
     inACallExpression(node);
     print(node.getIdentifier().getText());
@@ -285,6 +367,32 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
     print("++)");
     node.getStatementBlock().apply(this);
     outAForStatement(node);
+  }
+
+  @Override
+  public void outAMinusUnaryOp(AMinusUnaryOp node) {
+    print("-");
+  }
+
+  @Override
+  public void outAExclMarkUnaryOp(AExclMarkUnaryOp node) {
+    print("!");
+  }
+
+  @Override
+  public void outAUnaryOpUnaryExpression(AUnaryOpUnaryExpression node) {
+    print(node.getIdentifier().getText());
+  }
+
+  @Override
+  public void caseABinaryExpressionBinaryExpression(ABinaryExpressionBinaryExpression node) {
+    inABinaryExpressionBinaryExpression(node);
+    node.getLValue().apply(this);
+    print(" ");
+    node.getBinaryOp().apply(this);
+    print(" ");
+    node.getRValue().apply(this);
+    outABinaryExpressionBinaryExpression(node);
   }
 
   private void printTabs() {

@@ -37,6 +37,8 @@ if 100 > 89 {
 
     double r = 125 / 241.421;
 
+    int afas = -i;
+    afas += 1;
 
     for i in 0:10 {
         printf(i);
