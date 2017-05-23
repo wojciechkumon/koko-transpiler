@@ -50,16 +50,38 @@ import org.newkoko.c.node.AVoidFunctionType;
 import org.newkoko.c.node.AWhileStatement;
 import org.newkoko.c.node.Start;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.stream.IntStream;
 
-public class KokoCodeGenerator extends DepthFirstAdapter {
+public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
+  private final OutputStreamWriter out;
+  private final StringBuilder functionDeclarations = new StringBuilder();
+  private final StringBuilder body = new StringBuilder();
+  private final StringBuilder main = new StringBuilder();
   private int tabCount = 0;
+  private boolean inFunctionDeclaration = false;
+
+
+  public KokoCodeGenerator(OutputStream out) {
+    this.out = new OutputStreamWriter(out);
+  }
 
   @Override
-  public void inStart(Start node) {
-    println("#include <stdio.h>");
-    println();
-    println();
+  public void outStart(Start node) {
+    try {
+      out.write("#include <stdio.h>\n\n\n");
+      out.write(functionDeclarations.toString());
+      out.write("\n\n");
+      out.write(body.toString());
+      out.write("int main() {\n");
+      out.write(main.toString());
+      out.write("\n}");
+    } catch (IOException e) {
+      throw new RuntimeException("Error while saving C code", e);
+    }
   }
 
   @Override
@@ -152,21 +174,27 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
   @Override
   public void caseAFunctionDeclaration(AFunctionDeclaration node) {
     inAFunctionDeclaration(node);
+    inFunctionDeclaration = true;
     if (node.getFunctionType() != null) {
       node.getFunctionType().apply(this);
     }
     print(node.getIdentifier().getText());
+    functionDeclarations.append(node.getIdentifier().getText());
     print("(");
+    functionDeclarations.append("(");
     if (node.getParameterList() != null) {
       node.getParameterList().apply(this);
     }
     print(")");
+    functionDeclarations.append(");\n");
+    inFunctionDeclaration = false;
     outAFunctionDeclaration(node);
   }
 
   @Override
   public void outAVoidFunctionType(AVoidFunctionType node) {
     print("void ");
+    functionDeclarations.append("void ");
   }
 
   @Override
@@ -175,6 +203,7 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
     node.getType().apply(this);
 
     print(node.getIdentifier().getText());
+    functionDeclarations.append(node.getIdentifier().getText());
     outAParameter(node);
   }
 
@@ -182,6 +211,7 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
   public void caseANextParameter(ANextParameter node) {
     inANextParameter(node);
     print(", ");
+    functionDeclarations.append(", ");
     node.getParameter().apply(this);
     outANextParameter(node);
   }
@@ -194,16 +224,25 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
   @Override
   public void outAIntType(AIntType node) {
     print("int ");
+    if (inFunctionDeclaration) {
+      functionDeclarations.append("int ");
+    }
   }
 
   @Override
   public void outALongType(ALongType node) {
     print("long long ");
+    if (inFunctionDeclaration) {
+      functionDeclarations.append("long long ");
+    }
   }
 
   @Override
   public void outADoubleType(ADoubleType node) {
     print("double ");
+    if (inFunctionDeclaration) {
+      functionDeclarations.append("double ");
+    }
   }
 
   @Override
@@ -338,7 +377,8 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
     node.getConditionalExpression().apply(this);
     node.getIfBlock().apply(this);
 
-    printWithTabs("else");
+    body.deleteCharAt(body.length() - 1);
+    print(" else");
     node.getElseBlock().apply(this);
     outAIfElseStatement(node);
   }
@@ -406,19 +446,25 @@ public class KokoCodeGenerator extends DepthFirstAdapter {
   }
 
   private void print(String text) {
-    System.out.print(text);
+    body.append(text);
   }
 
   private void println() {
-    System.out.println();
+    body.append('\n');
   }
 
   private void println(String text) {
-    System.out.println(text);
+    print(text);
+    println();
   }
 
   private void printlnWithTabs(String text) {
     printWithTabs(text);
     println();
+  }
+
+  @Override
+  public void close() throws IOException {
+    this.out.close();
   }
 }

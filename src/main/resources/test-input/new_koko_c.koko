@@ -8,6 +8,11 @@ fun x(double y) void {
     r */
 }
 
+fun doSth(int y) int {
+    int z = y * 2;
+    return z;
+}
+
 if 100 > 89 {
 
     printf("afa");
