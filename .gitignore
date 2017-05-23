@@ -1,6 +1,4 @@
 target/
-src/main/java/org/koko/
-src/main/java/org/newkoko/
-src/main/java/expression/
 .idea/
 *.iml
+dependency-reduced-pom.xml
