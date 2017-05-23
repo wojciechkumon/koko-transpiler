@@ -173,8 +173,7 @@ Productions
     arg_list_tail = comma value ;
 
     stop_statement = {return} return semicolon
-                        | {return_value} return value semicolon
-                        | {return_par} return l_par value r_par semicolon ;
+                        | {return_value} return value semicolon;
 
     value = {identifier} identifier
             | {constant} constant ;

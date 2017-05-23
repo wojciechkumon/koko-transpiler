@@ -8,34 +8,38 @@ fun x(double y) void {
     r */
 }
 
-print("afa");
+if 100 > 89 {
 
-double blabla = 12412;
-x(1241);
+    printf("afa");
 
-if 7 > 5 {
-    return 2;
-}
+    double blabla = 12412;
+    x(1241);
 
-if 13512 == 7546 {
-    int a =5;
-} else {
-    int b = 1;
-    print(b);
-}
+    if 7 > 5 {
+        return 2;
+    }
 
-
-int i = 0;
-while i == 2 {
-    print(i);
-    i = i + 1;
-}
-
-int x = sth(12421);
-
-double r = 125 / 241.421;
+    if 13512 == 7546 {
+        int a =5;
+    } else {
+        int b = 1;
+        printf(b);
+    }
 
 
-for i in 0:10 {
-    print(i);
+    int j = 0;
+    while j < 2 {
+        printf(j);
+        j = j + 1;
+    }
+
+    int x = sth(12421);
+
+    double r = 125 / 241.421;
+
+
+    for i in 0:10 {
+        printf(i);
+    }
+
 }
