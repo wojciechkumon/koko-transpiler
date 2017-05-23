@@ -2,6 +2,7 @@ package newkokoc;
 
 import org.newkoko.c.analysis.DepthFirstAdapter;
 import org.newkoko.c.node.AAmpersandAmpersandBinaryOp;
+import org.newkoko.c.node.AArgListTail;
 import org.newkoko.c.node.AAssignVariable;
 import org.newkoko.c.node.ABarBarBinaryOp;
 import org.newkoko.c.node.ABinaryExpressionBinaryExpression;
@@ -44,6 +45,7 @@ import org.newkoko.c.node.ASimpleStatementStatement;
 import org.newkoko.c.node.AStarBinaryOp;
 import org.newkoko.c.node.AStarEqAssignOp;
 import org.newkoko.c.node.AStatementBlock;
+import org.newkoko.c.node.AStatementFunctionOrStatement;
 import org.newkoko.c.node.AStringConstant;
 import org.newkoko.c.node.AUnaryOpUnaryExpression;
 import org.newkoko.c.node.AVoidFunctionType;
@@ -61,6 +63,7 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   private final StringBuilder functionDeclarations = new StringBuilder();
   private final StringBuilder body = new StringBuilder();
   private final StringBuilder main = new StringBuilder();
+  private StringBuilder currentBuilder = body;
   private int tabCount = 0;
   private boolean inFunctionDeclaration = false;
 
@@ -71,6 +74,8 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outStart(Start node) {
+    currentBuilder = main;
+    printlnWithTabs("return 0;");
     try {
       out.write("#include <stdio.h>\n\n\n");
       out.write(functionDeclarations.toString());
@@ -78,7 +83,7 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
       out.write(body.toString());
       out.write("int main() {\n");
       out.write(main.toString());
-      out.write("\n}");
+      out.write("}");
     } catch (IOException e) {
       throw new RuntimeException("Error while saving C code", e);
     }
@@ -86,7 +91,6 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void inAIfStatement(AIfStatement node) {
-    println();
     printWithTabs("if ");
   }
 
@@ -164,11 +168,6 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   public void outAReturnStopStatement(AReturnStopStatement node) {
     printlnWithTabs("return;");
-  }
-
-  @Override
-  public void outAIfStatement(AIfStatement node) {
-    println();
   }
 
   @Override
@@ -365,6 +364,10 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
     outACallExpression(node);
   }
 
+  public void inAArgListTail(AArgListTail node) {
+    print(", ");
+  }
+
   @Override
   public void outAStringConstant(AStringConstant node) {
     print(node.getStringLiteral().getText());
@@ -377,7 +380,7 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
     node.getConditionalExpression().apply(this);
     node.getIfBlock().apply(this);
 
-    body.deleteCharAt(body.length() - 1);
+    currentBuilder.deleteCharAt(currentBuilder.length() - 1);
     print(" else");
     node.getElseBlock().apply(this);
     outAIfElseStatement(node);
@@ -435,8 +438,20 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
     outABinaryExpressionBinaryExpression(node);
   }
 
+  public void inAStatementFunctionOrStatement(AStatementFunctionOrStatement node) {
+    currentBuilder = main;
+  }
+
+  public void outAStatementFunctionOrStatement(AStatementFunctionOrStatement node) {
+    currentBuilder = body;
+  }
+
   private void printTabs() {
-    IntStream.range(0, 2 * tabCount)
+    int tabs = 2 * tabCount;
+    if (currentBuilder == main) {
+      tabs += 2;
+    }
+    IntStream.range(0, tabs)
         .forEach(x -> print(" "));
   }
 
@@ -446,11 +461,11 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   }
 
   private void print(String text) {
-    body.append(text);
+    currentBuilder.append(text);
   }
 
   private void println() {
-    body.append('\n');
+    currentBuilder.append('\n');
   }
 
   private void println(String text) {

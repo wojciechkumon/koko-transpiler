@@ -15,12 +15,12 @@ fun doSth(int y) int {
 
 if 100 > 89 {
 
-    printf("afa");
+    printf("in if\n");
 
     double blabla = 12412;
     x(1241);
 
-    if 7 > 5 {
+    if 3 > 5 {
         return 2;
     }
 
@@ -28,25 +28,27 @@ if 100 > 89 {
         int a =5;
     } else {
         int b = 1;
-        printf(b);
+        printf("%i\n", b);
     }
 
 
     int j = 0;
     while j < 2 {
-        printf(j);
+        printf("%i\n", j);
         j = j + 1;
     }
 
-    int x = sth(12421);
+    int x = doSth(12421);
 
     double r = 125 / 241.421;
 
-    int afas = -i;
+    int afas = -j;
     afas += 1;
 
     for i in 0:10 {
-        printf(i);
+        printf("%i\n", i);
     }
+
+    printf("end\n");
 
 }
