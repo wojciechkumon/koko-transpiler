@@ -4,6 +4,13 @@ public class Var {
   private String type;
   private String name;
 
+  public Var() {}
+
+  public Var(String type, String name) {
+    this.type = type;
+    this.name = name;
+  }
+
   public String getType() {
     return type;
   }

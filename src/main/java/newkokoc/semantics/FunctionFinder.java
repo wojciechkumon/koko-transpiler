@@ -82,7 +82,6 @@ public class FunctionFinder extends DepthFirstAdapter {
     node.getFunctionType().apply(this);
 
     currentFunction.setName(node.getIdentifier().getText());
-    // check if other with same amount of args with same name
 
     if (node.getParameterList() != null) {
       inParamList = true;

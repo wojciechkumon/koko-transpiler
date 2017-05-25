@@ -6,6 +6,7 @@ fun x(double y) void {
     xx
     xx
     r */
+    doSth(strangeVar);
 }
 
 fun doSth(int y) int {
@@ -28,6 +29,7 @@ if 100 > 89 {
 
     double blabla = 12412;
     x(1241);
+    doSth("sth");
 
     if 3 > 5 {
         return 2;
@@ -48,6 +50,7 @@ if 100 > 89 {
     }
 
     int x = doSth(12421);
+    doSth(strangeVar);
 
     double r = 125 / 241.421;
 

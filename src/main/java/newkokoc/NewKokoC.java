@@ -115,5 +115,8 @@ public class NewKokoC {
   private static void checkSemantics(Start start, List<Function> functions) {
     SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(functions);
     start.apply(semanticAnalyzer);
+    if (semanticAnalyzer.errorsFound()) {
+      throw new SemanticAnalyzerException(semanticAnalyzer.getErrors());
+    }
   }
 }
