@@ -11,6 +11,7 @@ import org.newkoko.c.node.Start;
 import org.newkoko.c.node.Token;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -161,5 +162,9 @@ public class FunctionFinder extends DepthFirstAdapter {
   public String getErrors() {
     return errors.stream()
         .collect(Collectors.joining(System.lineSeparator()));
+  }
+
+  public List<Function> getFunctions() {
+    return Collections.unmodifiableList(functions);
   }
 }

@@ -15,9 +15,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 import newkoko.NewKokoMain;
+import newkokoc.semantics.Function;
 import newkokoc.semantics.FunctionFinder;
+import newkokoc.semantics.SemanticAnalyzer;
 import newkokoc.semantics.SemanticAnalyzerException;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -91,15 +94,26 @@ public class NewKokoC {
     Parser p = new Parser(l);
     Start start = p.parse();
 
+    List<Function> functions = findFunctions(start);
+    checkSemantics(start, functions);
+
+    try (KokoCodeGenerator codeGenerator = new KokoCodeGenerator(out)) {
+      start.apply(codeGenerator);
+    }
+//    start.apply(new AstDisplayer());
+  }
+
+  private static List<Function> findFunctions(Start start) {
     FunctionFinder functionFinder = new FunctionFinder();
     start.apply(functionFinder);
     if (functionFinder.errorsFound()) {
       throw new SemanticAnalyzerException(functionFinder.getErrors());
     }
+    return functionFinder.getFunctions();
+  }
 
-    try (KokoCodeGenerator codeGenerator = new KokoCodeGenerator(out)) {
-      start.apply(codeGenerator);
-    }
-    //      start.apply(new AstDisplayer());
+  private static void checkSemantics(Start start, List<Function> functions) {
+    SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(functions);
+    start.apply(semanticAnalyzer);
   }
 }
