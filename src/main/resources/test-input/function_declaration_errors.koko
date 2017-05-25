@@ -13,11 +13,17 @@ fun doSth(int y) int {
     return z;
 }
 
-fun x(double y, double m) void {
+fun x(double y) void {
     double test = -5;
+
+    // short comment fgv43ptm43op m43p 3m p34
+    /* long comment
+    xx
+    xx
+    r */
 }
 
-fun doSth(int y, int z) int {
+fun doSth(int y, double y) int {
     int z = y * 2;
     return z;
 }

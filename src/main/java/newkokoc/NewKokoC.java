@@ -6,6 +6,7 @@ import org.newkoko.c.node.Start;
 import org.newkoko.c.parser.Parser;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -16,6 +17,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 import newkoko.NewKokoMain;
+import newkokoc.semantics.FunctionFinder;
+import newkokoc.semantics.SemanticAnalyzerException;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.READ;
@@ -27,7 +30,12 @@ public class NewKokoC {
     if (argv.length == 0) {
       InputStream inputStream = NewKokoMain.class.getClassLoader()
           .getResourceAsStream("test-input/new_koko_c.koko");
-      singleCompile(inputStream, System.out);
+      try {
+        singleCompile(inputStream, System.out);
+      } catch (SemanticAnalyzerException e) {
+        System.err.println("Error in input");
+        System.err.println(e.getMessage());
+      }
       return;
     }
 
@@ -65,6 +73,14 @@ public class NewKokoC {
         singleCompile(in, out);
       }
       System.out.println(inputPath.getFileName() + " compiled to " + outputPath.getFileName());
+    } catch (SemanticAnalyzerException e) {
+      System.err.println("Error in file: " + inputPath);
+      System.err.println(e.getMessage());
+      try {
+        Files.deleteIfExists(outputPath);
+      } catch (IOException e1) {
+        throw new RuntimeException(e1);
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -74,6 +90,12 @@ public class NewKokoC {
     Lexer l = new Lexer(new PushbackReader(new BufferedReader(new InputStreamReader(in))));
     Parser p = new Parser(l);
     Start start = p.parse();
+
+    FunctionFinder functionFinder = new FunctionFinder();
+    start.apply(functionFinder);
+    if (functionFinder.errorsFound()) {
+      throw new SemanticAnalyzerException(functionFinder.getErrors());
+    }
 
     try (KokoCodeGenerator codeGenerator = new KokoCodeGenerator(out)) {
       start.apply(codeGenerator);
