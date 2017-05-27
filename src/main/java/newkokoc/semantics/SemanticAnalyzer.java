@@ -166,8 +166,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         return;
       }
       checkParamType(var.get().getType());
-      // TODO uncomment, nested scopes, assignment statements type checks, function scope on start/end
-      // TODO statement scope on start/end var map
+      // TODO type checks for right hand value when assigning
     }
   }
 
