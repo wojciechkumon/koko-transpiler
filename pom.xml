@@ -53,8 +53,6 @@
                         <argument>lib/sablecc.jar</argument>
                         <argument>src/main/resources/sablecc/new_koko_c.sablecc3</argument>
                         <argument>src/main/resources/sablecc/c_style_funcdef.sablecc3</argument>
-                        <argument>src/main/resources/sablecc/calc.sablecc3</argument>
-                        <argument>src/main/resources/sablecc/koko.sablecc3</argument>
                         <argument>src/main/resources/sablecc/newkoko.sablecc3</argument>
                     </arguments>
                 </configuration>
@@ -76,22 +74,6 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/resources/sablecc/org</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-sablecc-sources2</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/generated-sources/expression
-                            </outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources/sablecc/expression</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -129,8 +111,6 @@
                         <configuration>
                             <target>
                                 <delete dir="${basedir}/src/main/resources/sablecc/org"
-                                        includeemptydirs="true"/>
-                                <delete dir="${basedir}/src/main/resources/sablecc/expression"
                                         includeemptydirs="true"/>
                             </target>
                         </configuration>

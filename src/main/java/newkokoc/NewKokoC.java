@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import newkoko.NewKokoMain;
 import newkokoc.semantics.Function;
 import newkokoc.semantics.FunctionFinder;
 import newkokoc.semantics.SemanticAnalyzer;
@@ -31,7 +30,7 @@ public class NewKokoC {
 
   public static void main(String[] argv) throws Exception {
     if (argv.length == 0) {
-      InputStream inputStream = NewKokoMain.class.getClassLoader()
+      InputStream inputStream = NewKokoC.class.getClassLoader()
           .getResourceAsStream("test-input/new_koko_c.koko");
       try {
         singleCompile(inputStream, System.out);

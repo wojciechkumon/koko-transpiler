@@ -40,13 +40,12 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
 
   public SemanticAnalyzer(List<Function> functions) {
     Map<String, List<Function>> functionMap = new HashMap<>();
-    functions.forEach(fun -> {
-      functionMap.merge(fun.getName(), new ArrayList<>(singletonList(fun)), (firstFunList, secondFunList) -> {
-        List<Function> newFuns = new ArrayList<>(firstFunList);
-        newFuns.addAll(secondFunList);
-        return newFuns;
-      });
-    });
+    functions.forEach(fun ->
+        functionMap.merge(fun.getName(), new ArrayList<>(singletonList(fun)), (firstFunList, secondFunList) -> {
+          List<Function> newFuns = new ArrayList<>(firstFunList);
+          newFuns.addAll(secondFunList);
+          return newFuns;
+        }));
 
     this.functions = Collections.unmodifiableMap(functionMap);
   }
