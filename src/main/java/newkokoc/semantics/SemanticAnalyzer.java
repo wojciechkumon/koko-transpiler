@@ -4,6 +4,7 @@ import org.newkoko.c.analysis.DepthFirstAdapter;
 import org.newkoko.c.node.ACallExpression;
 import org.newkoko.c.node.ADoubleConstant;
 import org.newkoko.c.node.ADoubleType;
+import org.newkoko.c.node.AForStatement;
 import org.newkoko.c.node.AFunctionFunctionOrStatement;
 import org.newkoko.c.node.AIdentifierValue;
 import org.newkoko.c.node.AIntType;
@@ -37,6 +38,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   private Scope currentScope = mainScope;
   private String lastParamName;
   private String newVarName = null;
+  private String forLoopIdentifier = null;
 
   public SemanticAnalyzer(List<Function> functions) {
     Map<String, List<Function>> functionMap = new HashMap<>();
@@ -57,7 +59,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         node.getIdentifier().getPos());
     this.calledFunction = new CalledFunction(node.getIdentifier().getText(), position);
     foundCalledFunctions = this.functions.get(calledFunction.getName());
-    if (foundCalledFunctions == null) {
+    if (!calledFunction.getName().equals("printf") && foundCalledFunctions == null) {
       addCallFunctionError(calledFunction);
       inCallExpression = false;
       return;
@@ -74,16 +76,16 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         + calledFunction.getPosition());
   }
 
+  private void addParamTypeError(CalledFunction calledFunction, String correctType) {
+    errors.add("Can't find function with correct parameter types for '" + calledFunction.getName() + "' "
+        + calledFunction.getPosition() + ", parameter index " + functionParamIndex + ", type is " + correctType);
+  }
+
   @Override
   public void outAIntegerConstant(AIntegerConstant node) {
     if (inCallExpression) {
       checkParamTypeForConstant("int");
     }
-  }
-
-  private void addParamTypeError(CalledFunction calledFunction, String correctType) {
-    errors.add("Can't find function with correct parameter types for '" + calledFunction.getName() + "' "
-        + calledFunction.getPosition() + ", parameter index " + functionParamIndex + ", type is " + correctType);
   }
 
   @Override
@@ -106,7 +108,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   }
 
   private void checkParamType(String type) {
-    if (foundCalledFunctions.stream()
+    if (calledFunction.getName().equals("printf")) {
+      if (functionParamIndex == 0 && !type.equals("string")) {
+        addParamTypeError(calledFunction, type);
+      }
+    } else if (foundCalledFunctions.stream()
         .noneMatch(fun -> fun.getParams().size() <= functionParamIndex
             || type.equals(fun.getParams().get(functionParamIndex).getType()))) {
       addParamTypeError(calledFunction, type);
@@ -135,21 +141,27 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
 
   @Override
   public void outAIntType(AIntType node) {
-    if (lastParamName != null || newVarName != null) {
+    if (lastParamName != null) {
+      currentScope.put(new Var("int", lastParamName));
+    } else if (newVarName != null) {
       currentScope.put(new Var("int", newVarName));
     }
   }
 
   @Override
   public void outALongType(ALongType node) {
-    if (lastParamName != null || newVarName != null) {
+    if (lastParamName != null) {
       currentScope.put(new Var("long", lastParamName));
+    } else if (newVarName != null) {
+      currentScope.put(new Var("long", newVarName));
     }
   }
 
   @Override
   public void outADoubleType(ADoubleType node) {
-    if (lastParamName != null || newVarName != null) {
+    if (lastParamName != null) {
+      currentScope.put(new Var("double", lastParamName));
+    } else if (newVarName != null) {
       currentScope.put(new Var("double", newVarName));
     }
   }
@@ -172,6 +184,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   @Override
   public void inAStatementBlock(AStatementBlock node) {
     currentScope = new InnerScope(currentScope);
+    if (forLoopIdentifier != null) {
+      currentScope.put(new Var("int", forLoopIdentifier));
+    }
   }
 
   @Override
@@ -188,6 +203,16 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   @Override
   public void outANewVariable(ANewVariable node) {
     newVarName = null;
+  }
+
+  @Override
+  public void inAForStatement(AForStatement node) {
+    forLoopIdentifier = node.getIdentifier().getText();
+  }
+
+  @Override
+  public void outAForStatement(AForStatement node) {
+    forLoopIdentifier = null;
   }
 
   private void addVarNotFoundError(TIdentifier identifier) {
