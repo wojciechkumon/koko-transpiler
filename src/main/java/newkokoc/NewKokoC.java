@@ -78,13 +78,18 @@ public class NewKokoC {
     } catch (SemanticAnalyzerException e) {
       System.err.println("Error in file: " + inputPath);
       System.err.println(e.getMessage());
-      try {
-        Files.deleteIfExists(outputPath);
-      } catch (IOException e1) {
-        throw new RuntimeException(e1);
-      }
+      deleteOutputFile(outputPath);
     } catch (Exception e) {
       e.printStackTrace();
+      deleteOutputFile(outputPath);
+    }
+  }
+
+  private static void deleteOutputFile(Path outputPath) {
+    try {
+      Files.deleteIfExists(outputPath);
+    } catch (IOException e1) {
+      throw new RuntimeException(e1);
     }
   }
 
