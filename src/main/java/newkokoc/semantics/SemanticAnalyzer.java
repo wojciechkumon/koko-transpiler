@@ -9,7 +9,9 @@ import org.newkoko.c.node.AIdentifierValue;
 import org.newkoko.c.node.AIntType;
 import org.newkoko.c.node.AIntegerConstant;
 import org.newkoko.c.node.ALongType;
+import org.newkoko.c.node.ANewVariable;
 import org.newkoko.c.node.AParameter;
+import org.newkoko.c.node.AStatementBlock;
 import org.newkoko.c.node.AStringConstant;
 import org.newkoko.c.node.TIdentifier;
 
@@ -18,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
@@ -29,8 +32,11 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   private CalledFunction calledFunction = null;
   private List<Function> foundCalledFunctions = null;
   private Integer functionParamIndex = null;
-  private Map<String, Var> functionScope;
+  private Scope functionScope;
+  private Scope mainScope = new MainScope();
+  private Scope currentScope = mainScope;
   private String lastParamName;
+  private String newVarName = null;
 
   public SemanticAnalyzer(List<Function> functions) {
     Map<String, List<Function>> functionMap = new HashMap<>();
@@ -110,7 +116,15 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
 
   @Override
   public void inAFunctionFunctionOrStatement(AFunctionFunctionOrStatement node) {
-    functionScope = new HashMap<>();
+    functionScope = new MainScope();
+    currentScope = functionScope;
+  }
+
+
+  @Override
+  public void outAFunctionFunctionOrStatement(AFunctionFunctionOrStatement node) {
+    functionScope = null;
+    currentScope = mainScope;
   }
 
   @Override
@@ -122,28 +136,23 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
 
   @Override
   public void outAIntType(AIntType node) {
-    if (lastParamName != null) {
-      functionScope.put(lastParamName, new Var("int", lastParamName));
+    if (lastParamName != null || newVarName != null) {
+      currentScope.put(new Var("int", newVarName));
     }
   }
 
   @Override
   public void outALongType(ALongType node) {
-    if (lastParamName != null) {
-      functionScope.put(lastParamName, new Var("long", lastParamName));
+    if (lastParamName != null || newVarName != null) {
+      currentScope.put(new Var("long", lastParamName));
     }
   }
 
   @Override
   public void outADoubleType(ADoubleType node) {
-    if (lastParamName != null) {
-      functionScope.put(lastParamName, new Var("double", lastParamName));
+    if (lastParamName != null || newVarName != null) {
+      currentScope.put(new Var("double", newVarName));
     }
-  }
-
-  @Override
-  public void outAFunctionFunctionOrStatement(AFunctionFunctionOrStatement node) {
-    functionScope = null;
   }
 
   @Override
@@ -151,18 +160,36 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     if (inCallExpression) {
       functionParamIndex++;
       String identifier = node.getIdentifier().getText();
-      if (functionScope == null) {
-        return; // TODO add all scopes
-      }
-      Var var = functionScope.get(identifier);
-      if (var == null) {
+      Optional<Var> var = currentScope.get(identifier);
+      if (!var.isPresent()) {
         addVarNotFoundError(node.getIdentifier());
         return;
       }
-      checkParamType(var.getType());
+      checkParamType(var.get().getType());
       // TODO uncomment, nested scopes, assignment statements type checks, function scope on start/end
       // TODO statement scope on start/end var map
     }
+  }
+
+  @Override
+  public void inAStatementBlock(AStatementBlock node) {
+    currentScope = new InnerScope(currentScope);
+  }
+
+  @Override
+  public void outAStatementBlock(AStatementBlock node) {
+    InnerScope innerScope = (InnerScope) currentScope;
+    currentScope = innerScope.getOuterScope();
+  }
+
+  @Override
+  public void inANewVariable(ANewVariable node) {
+    newVarName = node.getIdentifier().getText();
+  }
+
+  @Override
+  public void outANewVariable(ANewVariable node) {
+    newVarName = null;
   }
 
   private void addVarNotFoundError(TIdentifier identifier) {

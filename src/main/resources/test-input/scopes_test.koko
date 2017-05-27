@@ -27,11 +27,24 @@ if 100 > 89 {
     printf("in if\n");
 
     double blabla = 12412;
-    x(1241.0);
+    x(1241);
+    int someInt = 12;
+    x(someInt); // wrong type
 
     if 3 > 5 {
         return 2;
     }
+
+    if 1 > 0 {
+        int nnn = 4;
+        double dbl =7.8;
+        doSth(nnn); // ok
+        if 1 > 0 {
+            doSth(nnn); // ok
+            doSth(dbl); // wrong type
+        }
+    }
+    doSth(nnn); // wrong
 
     if 13512 == 7546 {
         int a =5;
