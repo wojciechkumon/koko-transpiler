@@ -18,8 +18,8 @@ fun x(double y, double m) void {
 }
 
 fun doSth(int y, int z) int {
-    int z = y * 2;
-    return z;
+    int x = y * 2;
+    return x;
 }
 
 if 100 > 89 {

@@ -39,6 +39,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   private String lastParamName;
   private String newVarName = null;
   private String forLoopIdentifier = null;
+  private Position forLoopIdentifierPosition = null;
 
   public SemanticAnalyzer(List<Function> functions) {
     Map<String, List<Function>> functionMap = new HashMap<>();
@@ -141,28 +142,31 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
 
   @Override
   public void outAIntType(AIntType node) {
+    Position position = new Position(node.getInt().getLine(), node.getInt().getPos());
     if (lastParamName != null) {
-      currentScope.put(new Var("int", lastParamName));
+      putVarToScope(currentScope, new Var("int", lastParamName), position);
     } else if (newVarName != null) {
-      currentScope.put(new Var("int", newVarName));
+      putVarToScope(currentScope, new Var("int", newVarName), position);
     }
   }
 
   @Override
   public void outALongType(ALongType node) {
+    Position position = new Position(node.getLong().getLine(), node.getLong().getPos());
     if (lastParamName != null) {
-      currentScope.put(new Var("long", lastParamName));
+      putVarToScope(currentScope, new Var("long", lastParamName), position);
     } else if (newVarName != null) {
-      currentScope.put(new Var("long", newVarName));
+      putVarToScope(currentScope, new Var("long", newVarName), position);
     }
   }
 
   @Override
   public void outADoubleType(ADoubleType node) {
+    Position position = new Position(node.getDouble().getLine(), node.getDouble().getPos());
     if (lastParamName != null) {
-      currentScope.put(new Var("double", lastParamName));
+      putVarToScope(currentScope, new Var("double", lastParamName), position);
     } else if (newVarName != null) {
-      currentScope.put(new Var("double", newVarName));
+      putVarToScope(currentScope, new Var("double", newVarName), position);
     }
   }
 
@@ -185,7 +189,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   public void inAStatementBlock(AStatementBlock node) {
     currentScope = new InnerScope(currentScope);
     if (forLoopIdentifier != null) {
-      currentScope.put(new Var("int", forLoopIdentifier));
+      putVarToScope(currentScope, new Var("int", forLoopIdentifier), forLoopIdentifierPosition);
     }
   }
 
@@ -207,12 +211,21 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
 
   @Override
   public void inAForStatement(AForStatement node) {
-    forLoopIdentifier = node.getIdentifier().getText();
+    TIdentifier identifier = node.getIdentifier();
+    forLoopIdentifier = identifier.getText();
+    forLoopIdentifierPosition = new Position(identifier.getLine(), identifier.getPos());
   }
 
   @Override
   public void outAForStatement(AForStatement node) {
     forLoopIdentifier = null;
+  }
+
+  private void putVarToScope(Scope scope, Var var, Position position) {
+    boolean success = scope.put(var);
+    if (!success) {
+      errors.add("Redefinition of variable: " + var + " " + position);
+    }
   }
 
   private void addVarNotFoundError(TIdentifier identifier) {
