@@ -4,7 +4,7 @@ Package org.newkoko.c;
 Helpers
     all	= [0 .. 127] ;
     digit = ['0' .. '9'] ;
-    not_digit = ['_' + [['a' .. 'z'] + ['A' .. 'Z']]] ;
+    not_digit = [['a' .. 'z'] + ['A' .. 'Z']] ;
     digit_sequence = digit+ ;
     fractional_constant	= digit_sequence ? '.' digit_sequence | digit_sequence '.' ;
     sign = '+' | '-' ;
