@@ -17,6 +17,7 @@ import org.newkoko.c.node.AExclMarkUnaryOp;
 import org.newkoko.c.node.AForStatement;
 import org.newkoko.c.node.AFunctionBody;
 import org.newkoko.c.node.AFunctionDeclaration;
+import org.newkoko.c.node.AFunctionFunctionOrStatement;
 import org.newkoko.c.node.AGtEqRelationOp;
 import org.newkoko.c.node.AGtRelationOp;
 import org.newkoko.c.node.AIdentifierValue;
@@ -58,6 +59,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.stream.IntStream;
 
+import newkokoc.semantics.InnerScope;
+import newkokoc.semantics.MainScope;
+import newkokoc.semantics.Scope;
+import newkokoc.semantics.Var;
+
 public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   private final OutputStreamWriter out;
   private final StringBuilder functionDeclarations = new StringBuilder();
@@ -66,7 +72,13 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   private StringBuilder currentBuilder = body;
   private int tabCount = 0;
   private boolean inFunctionDeclaration = false;
-  private boolean inFunctionNameGenerating = true;
+  private boolean inFunctionNameGenerating = false;
+  private Scope functionScope;
+  private Scope mainScope = new MainScope();
+  private Scope currentScope = mainScope;
+  private String forLoopIdentifier = null;
+  private String lastParamName;
+  private String newVarName = null;
 
 
   public KokoCodeGenerator(OutputStream out) {
@@ -157,12 +169,19 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   public void inAStatementBlock(AStatementBlock node) {
     println(" {");
     tabCount++;
+    currentScope = new InnerScope(currentScope);
+    if (forLoopIdentifier != null) {
+      currentScope.put(new Var("int", forLoopIdentifier));
+      forLoopIdentifier = null;
+    }
   }
 
   @Override
   public void outAStatementBlock(AStatementBlock node) {
     tabCount--;
     printlnWithTabs("}");
+    InnerScope innerScope = (InnerScope) currentScope;
+    currentScope = innerScope.getOuterScope();
   }
 
   @Override
@@ -216,7 +235,9 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   @Override
   public void caseAParameter(AParameter node) {
     inAParameter(node);
+    lastParamName = node.getIdentifier().getText();
     node.getType().apply(this);
+    lastParamName = null;
 
     if (!inFunctionNameGenerating) {
       print(node.getIdentifier().getText());
@@ -238,11 +259,21 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outAIdentifierValue(AIdentifierValue node) {
+    if (inFunctionNameGenerating) {
+      print(currentScope.get(node.getIdentifier().getText()).get().getType());
+      print("_");
+      return;
+    }
     print(node.getIdentifier().getText());
   }
 
   @Override
   public void outAIntType(AIntType node) {
+    if (lastParamName != null) {
+      currentScope.put(new Var("int", lastParamName));
+    } else if (newVarName != null) {
+      currentScope.put(new Var("int", newVarName));
+    }
     if (inFunctionNameGenerating) {
       print("int_");
       functionDeclarations.append("int_");
@@ -256,6 +287,11 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outALongType(ALongType node) {
+    if (lastParamName != null) {
+      currentScope.put(new Var("long", lastParamName));
+    } else if (newVarName != null) {
+      currentScope.put(new Var("long", newVarName));
+    }
     if (inFunctionNameGenerating) {
       print("long_");
       functionDeclarations.append("long_");
@@ -269,6 +305,11 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outADoubleType(ADoubleType node) {
+    if (lastParamName != null) {
+      currentScope.put(new Var("double", lastParamName));
+    } else if (newVarName != null) {
+      currentScope.put(new Var("double", newVarName));
+    }
     if (inFunctionNameGenerating) {
       print("double_");
       functionDeclarations.append("double_");
@@ -311,6 +352,16 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
     print(" = ");
     node.getRightHandSide().apply(this);
     outANewVariable(node);
+  }
+
+  @Override
+  public void inANewVariable(ANewVariable node) {
+    newVarName = node.getIdentifier().getText();
+  }
+
+  @Override
+  public void outANewVariable(ANewVariable node) {
+    newVarName = null;
   }
 
   @Override
@@ -397,11 +448,15 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
     if (!node.getIdentifier().getText().equals("printf")) {
       print("_");
       inFunctionNameGenerating = true;
-      node.getArgList().apply(this);
+      if (node.getArgList() != null) {
+        node.getArgList().apply(this);
+      }
       inFunctionNameGenerating = false;
     }
     print("(");
-    node.getArgList().apply(this);
+    if (node.getArgList() != null) {
+      node.getArgList().apply(this);
+    }
     print(")");
     outACallExpression(node);
   }
@@ -461,6 +516,17 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   }
 
   @Override
+  public void inAForStatement(AForStatement node) {
+    forLoopIdentifier = node.getIdentifier().getText();
+  }
+
+  @Override
+  public void outAForStatement(AForStatement node) {
+    forLoopIdentifier = null;
+  }
+
+
+  @Override
   public void outAMinusUnaryOp(AMinusUnaryOp node) {
     print("-");
   }
@@ -484,6 +550,18 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
     print(" ");
     node.getRValue().apply(this);
     outABinaryExpressionBinaryExpression(node);
+  }
+
+  @Override
+  public void inAFunctionFunctionOrStatement(AFunctionFunctionOrStatement node) {
+    functionScope = new MainScope();
+    currentScope = functionScope;
+  }
+
+  @Override
+  public void outAFunctionFunctionOrStatement(AFunctionFunctionOrStatement node) {
+    functionScope = null;
+    currentScope = mainScope;
   }
 
   public void inAStatementFunctionOrStatement(AStatementFunctionOrStatement node) {

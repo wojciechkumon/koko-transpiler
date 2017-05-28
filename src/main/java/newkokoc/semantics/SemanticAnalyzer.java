@@ -66,7 +66,9 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
       return;
     }
     functionParamIndex = -1;
-    node.getArgList().apply(this);
+    if (node.getArgList() != null) {
+      node.getArgList().apply(this);
+    }
     functionParamIndex = null;
     foundCalledFunctions = null;
     inCallExpression = false;
@@ -125,7 +127,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     functionScope = new MainScope();
     currentScope = functionScope;
   }
-
 
   @Override
   public void outAFunctionFunctionOrStatement(AFunctionFunctionOrStatement node) {
@@ -190,6 +191,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
     currentScope = new InnerScope(currentScope);
     if (forLoopIdentifier != null) {
       putVarToScope(currentScope, new Var("int", forLoopIdentifier), forLoopIdentifierPosition);
+      forLoopIdentifier = null;
     }
   }
 
