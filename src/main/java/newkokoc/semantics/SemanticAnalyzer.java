@@ -222,7 +222,7 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
   }
 
   private void putVarToScope(Scope scope, Var var, Position position) {
-    boolean success = scope.put(var);
+    boolean success = !var.getName().equals("printf") && scope.put(var);
     if (!success) {
       errors.add("Redefinition of variable: " + var + " " + position);
     }
