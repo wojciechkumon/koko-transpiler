@@ -48,6 +48,7 @@ if 100 > 89 {
     }
 
     int x = doSth(12421);
+    int zzz = doSth(12421,12);
 
     double r = 125 / 241.421;
 

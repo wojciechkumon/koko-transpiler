@@ -66,6 +66,7 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   private StringBuilder currentBuilder = body;
   private int tabCount = 0;
   private boolean inFunctionDeclaration = false;
+  private boolean inFunctionNameGenerating = true;
 
 
   public KokoCodeGenerator(OutputStream out) {
@@ -126,11 +127,19 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outAIntegerConstant(AIntegerConstant node) {
+    if (inFunctionNameGenerating) {
+      print("int_");
+      return;
+    }
     print(node.getIntegerConstant().getText());
   }
 
   @Override
   public void outADoubleConstant(ADoubleConstant node) {
+    if (inFunctionNameGenerating) {
+      print("double_");
+      return;
+    }
     print(node.getFloatingConstant().getText());
   }
 
@@ -178,7 +187,15 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
       node.getFunctionType().apply(this);
     }
     print(node.getIdentifier().getText());
+    print("_");
     functionDeclarations.append(node.getIdentifier().getText());
+    functionDeclarations.append("_");
+    if (node.getParameterList() != null) {
+      inFunctionNameGenerating = true;
+      node.getParameterList().apply(this);
+      inFunctionNameGenerating = false;
+    }
+
     print("(");
     functionDeclarations.append("(");
     if (node.getParameterList() != null) {
@@ -201,16 +218,20 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
     inAParameter(node);
     node.getType().apply(this);
 
-    print(node.getIdentifier().getText());
-    functionDeclarations.append(node.getIdentifier().getText());
+    if (!inFunctionNameGenerating) {
+      print(node.getIdentifier().getText());
+      functionDeclarations.append(node.getIdentifier().getText());
+    }
     outAParameter(node);
   }
 
   @Override
   public void caseANextParameter(ANextParameter node) {
     inANextParameter(node);
-    print(", ");
-    functionDeclarations.append(", ");
+    if (!inFunctionNameGenerating) {
+      print(", ");
+      functionDeclarations.append(", ");
+    }
     node.getParameter().apply(this);
     outANextParameter(node);
   }
@@ -222,6 +243,11 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outAIntType(AIntType node) {
+    if (inFunctionNameGenerating) {
+      print("int_");
+      functionDeclarations.append("int_");
+      return;
+    }
     print("int ");
     if (inFunctionDeclaration) {
       functionDeclarations.append("int ");
@@ -230,6 +256,11 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outALongType(ALongType node) {
+    if (inFunctionNameGenerating) {
+      print("long_");
+      functionDeclarations.append("long_");
+      return;
+    }
     print("long long ");
     if (inFunctionDeclaration) {
       functionDeclarations.append("long long ");
@@ -238,6 +269,11 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
 
   @Override
   public void outADoubleType(ADoubleType node) {
+    if (inFunctionNameGenerating) {
+      print("double_");
+      functionDeclarations.append("double_");
+      return;
+    }
     print("double ");
     if (inFunctionDeclaration) {
       functionDeclarations.append("double ");
@@ -358,6 +394,12 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   public void caseACallExpression(ACallExpression node) {
     inACallExpression(node);
     print(node.getIdentifier().getText());
+    if (!node.getIdentifier().getText().equals("printf")) {
+      print("_");
+      inFunctionNameGenerating = true;
+      node.getArgList().apply(this);
+      inFunctionNameGenerating = false;
+    }
     print("(");
     node.getArgList().apply(this);
     print(")");
@@ -365,11 +407,17 @@ public class KokoCodeGenerator extends DepthFirstAdapter implements Closeable {
   }
 
   public void inAArgListTail(AArgListTail node) {
-    print(", ");
+    if (!inFunctionNameGenerating) {
+      print(", ");
+    }
   }
 
   @Override
   public void outAStringConstant(AStringConstant node) {
+    if (inFunctionNameGenerating) {
+      print("string_");
+      return;
+    }
     print(node.getStringLiteral().getText());
   }
 
