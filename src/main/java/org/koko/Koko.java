@@ -75,12 +75,9 @@ public class Koko {
         singleCompile(in, out);
       }
       System.out.println(inputPath.getFileName() + " compiled to " + outputPath.getFileName());
-    } catch (SemanticAnalyzerException e) {
+    } catch (Exception e) {
       System.err.println("Error in file: " + inputPath);
       System.err.println(e.getMessage());
-      deleteOutputFile(outputPath);
-    } catch (Exception e) {
-      e.printStackTrace();
       deleteOutputFile(outputPath);
     }
   }
