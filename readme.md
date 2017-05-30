@@ -1,4 +1,4 @@
-# Koko language compiler #
+# Koko language transpiler (to C) #
 
 Build: `mvn clean install`
 
