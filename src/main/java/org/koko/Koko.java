@@ -31,7 +31,7 @@ public class Koko {
   public static void main(String[] argv) throws Exception {
     if (argv.length == 0) {
       InputStream inputStream = Koko.class.getClassLoader()
-          .getResourceAsStream("test-input/new_koko_c.koko");
+          .getResourceAsStream("test-input/correct_code.koko");
       try {
         singleCompile(inputStream, System.out);
       } catch (SemanticAnalyzerException e) {
