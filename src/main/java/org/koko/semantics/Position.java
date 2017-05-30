@@ -1,4 +1,4 @@
-package newkokoc.semantics;
+package org.koko.semantics;
 
 public class Position {
   private final int line;

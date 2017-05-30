@@ -1,14 +1,14 @@
-package newkokoc.semantics;
+package org.koko.semantics;
 
-import org.newkoko.c.analysis.DepthFirstAdapter;
-import org.newkoko.c.node.ADoubleType;
-import org.newkoko.c.node.AFunctionDeclaration;
-import org.newkoko.c.node.AIntType;
-import org.newkoko.c.node.ALongType;
-import org.newkoko.c.node.AParameter;
-import org.newkoko.c.node.AVoidFunctionType;
-import org.newkoko.c.node.Start;
-import org.newkoko.c.node.Token;
+import org.koko.analysis.DepthFirstAdapter;
+import org.koko.node.ADoubleType;
+import org.koko.node.AFunctionDeclaration;
+import org.koko.node.AIntType;
+import org.koko.node.ALongType;
+import org.koko.node.AParameter;
+import org.koko.node.AVoidFunctionType;
+import org.koko.node.Start;
+import org.koko.node.Token;
 
 import java.util.ArrayList;
 import java.util.Collections;

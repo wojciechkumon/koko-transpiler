@@ -1,9 +1,14 @@
-package newkokoc;
+package org.koko;
 
 import org.apache.commons.io.FilenameUtils;
-import org.newkoko.c.lexer.Lexer;
-import org.newkoko.c.node.Start;
-import org.newkoko.c.parser.Parser;
+import org.koko.generator.KokoCodeGenerator;
+import org.koko.lexer.Lexer;
+import org.koko.node.Start;
+import org.koko.parser.Parser;
+import org.koko.semantics.Function;
+import org.koko.semantics.FunctionFinder;
+import org.koko.semantics.SemanticAnalyzer;
+import org.koko.semantics.SemanticAnalyzerException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,20 +22,15 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-import newkokoc.semantics.Function;
-import newkokoc.semantics.FunctionFinder;
-import newkokoc.semantics.SemanticAnalyzer;
-import newkokoc.semantics.SemanticAnalyzerException;
-
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
-public class NewKokoC {
+public class Koko {
 
   public static void main(String[] argv) throws Exception {
     if (argv.length == 0) {
-      InputStream inputStream = NewKokoC.class.getClassLoader()
+      InputStream inputStream = Koko.class.getClassLoader()
           .getResourceAsStream("test-input/new_koko_c.koko");
       try {
         singleCompile(inputStream, System.out);
@@ -42,7 +42,7 @@ public class NewKokoC {
     }
 
     Arrays.asList(argv)
-        .forEach(NewKokoC::handleFile);
+        .forEach(Koko::handleFile);
   }
 
   private static void handleFile(String file) {
@@ -104,7 +104,6 @@ public class NewKokoC {
     try (KokoCodeGenerator codeGenerator = new KokoCodeGenerator(out)) {
       start.apply(codeGenerator);
     }
-//    start.apply(new AstDisplayer());
   }
 
   private static List<Function> findFunctions(Start start) {

@@ -51,8 +51,7 @@
                     <arguments>
                         <argument>-jar</argument>
                         <argument>lib/sablecc.jar</argument>
-                        <argument>src/main/resources/sablecc/new_koko_c.sablecc3</argument>
-                        <argument>src/main/resources/sablecc/newkoko.sablecc3</argument>
+                        <argument>src/main/resources/sablecc/koko.sablecc3</argument>
                     </arguments>
                 </configuration>
             </plugin>
@@ -84,12 +83,12 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/classes/org/newkoko/c
+                            <outputDirectory>${basedir}/target/classes/org/koko
                             </outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>
-                                        ${basedir}/target/generated-sources/org/newkoko/c
+                                        ${basedir}/target/generated-sources/org/koko
                                     </directory>
                                     <includes>
                                         <include>**/*.dat</include>
@@ -150,7 +149,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>newkokoc.NewKokoC</mainClass>
+                                    <mainClass>org.koko.Koko</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

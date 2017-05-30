@@ -1,4 +1,4 @@
-package newkokoc.semantics;
+package org.koko.semantics;
 
 import java.util.HashMap;
 import java.util.Map;

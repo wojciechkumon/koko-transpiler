@@ -1,20 +1,20 @@
-package newkokoc.semantics;
+package org.koko.semantics;
 
-import org.newkoko.c.analysis.DepthFirstAdapter;
-import org.newkoko.c.node.ACallExpression;
-import org.newkoko.c.node.ADoubleConstant;
-import org.newkoko.c.node.ADoubleType;
-import org.newkoko.c.node.AForStatement;
-import org.newkoko.c.node.AFunctionFunctionOrStatement;
-import org.newkoko.c.node.AIdentifierValue;
-import org.newkoko.c.node.AIntType;
-import org.newkoko.c.node.AIntegerConstant;
-import org.newkoko.c.node.ALongType;
-import org.newkoko.c.node.ANewVariable;
-import org.newkoko.c.node.AParameter;
-import org.newkoko.c.node.AStatementBlock;
-import org.newkoko.c.node.AStringConstant;
-import org.newkoko.c.node.TIdentifier;
+import org.koko.analysis.DepthFirstAdapter;
+import org.koko.node.ACallExpression;
+import org.koko.node.ADoubleConstant;
+import org.koko.node.ADoubleType;
+import org.koko.node.AForStatement;
+import org.koko.node.AFunctionFunctionOrStatement;
+import org.koko.node.AIdentifierValue;
+import org.koko.node.AIntType;
+import org.koko.node.AIntegerConstant;
+import org.koko.node.ALongType;
+import org.koko.node.ANewVariable;
+import org.koko.node.AParameter;
+import org.koko.node.AStatementBlock;
+import org.koko.node.AStringConstant;
+import org.koko.node.TIdentifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
