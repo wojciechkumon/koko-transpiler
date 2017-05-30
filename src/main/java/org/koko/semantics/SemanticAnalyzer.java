@@ -182,7 +182,6 @@ public class SemanticAnalyzer extends DepthFirstAdapter {
         return;
       }
       checkParamType(var.get().getType());
-      // TODO type checks for right hand value when assigning
     }
   }
 
