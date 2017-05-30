@@ -1,0 +1,24 @@
+double dd = nazwa();
+printf("%lf\n", dd);
+double max = max(dd, 17.1);
+printf("max: %lf\n", max);
+
+fun nazwa() double {
+  int x = 42;
+  printf("cos_tam\n");
+
+  for i in 1:5 {
+    if i == 5 {
+      printf("%i\n", x);
+    }
+  }
+
+  return 5.5;
+}
+
+fun max(double first, double second) double {
+  if first >= second {
+    return first;
+  }
+  return second;
+}
